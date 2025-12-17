@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -7,20 +7,40 @@ import Portfolio from './components/Portfolio';
 import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import ProjectDetails from './components/ProjectDetails';
 import { MessageCircle } from 'lucide-react';
+import { Project } from './types';
 
 const App: React.FC = () => {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  const handleProjectClick = (project: Project) => {
+    setSelectedProject(project);
+  };
+
+  const handleBackToHome = () => {
+    setSelectedProject(null);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-primary-200 selection:text-primary-900">
-      <Header />
+      <Header onLogoClick={handleBackToHome} />
+      
       <main>
-        <Hero />
-        <About />
-        <Services />
-        <Portfolio />
-        <Testimonials />
-        <Contact />
+        {selectedProject ? (
+          <ProjectDetails project={selectedProject} onBack={handleBackToHome} />
+        ) : (
+          <>
+            <Hero />
+            <About />
+            <Services />
+            <Portfolio onProjectClick={handleProjectClick} />
+            <Testimonials />
+            <Contact />
+          </>
+        )}
       </main>
+      
       <Footer />
       
       {/* Floating WhatsApp Button */}

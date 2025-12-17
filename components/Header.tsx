@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Phone } from 'lucide-react';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onLogoClick?: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onLogoClick }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -13,8 +17,17 @@ const Header: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleLogoClick = (e: React.MouseEvent) => {
+    if (onLogoClick) {
+      e.preventDefault();
+      onLogoClick();
+      // If we are on the same page, scroll top
+      window.scrollTo(0, 0);
+    }
+  };
+
   const navLinks = [
-    { name: 'ראשי', href: '#hero' },
+    { name: 'ראשי', href: '#hero', onClick: onLogoClick }, // Home click also resets view
     { name: 'אודות', href: '#about' },
     { name: 'שירותים', href: '#services' },
     { name: 'פרויקטים', href: '#portfolio' },
@@ -28,8 +41,12 @@ const Header: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <a href="#" className={`text-2xl font-bold transition-colors ${isScrolled ? 'text-secondary-900' : 'text-white'}`}>
-              אלעזר <span className="text-primary-500">שיפוצים</span>
+            <a 
+              href="#hero" 
+              onClick={handleLogoClick}
+              className={`text-2xl font-bold transition-colors ${isScrolled ? 'text-secondary-900' : 'text-primary-500 md:text-white'}`}
+            >
+              <span className={isScrolled ? 'text-secondary-900' : 'text-white'}>אלעזר</span> <span className="text-primary-500">שיפוצים</span>
             </a>
           </div>
 
@@ -39,6 +56,7 @@ const Header: React.FC = () => {
               <a
                 key={link.name}
                 href={link.href}
+                onClick={link.onClick}
                 className={`font-medium transition-colors hover:text-primary-500 ${isScrolled ? 'text-secondary-700' : 'text-white/90 hover:text-white'}`}
               >
                 {link.name}
@@ -73,7 +91,10 @@ const Header: React.FC = () => {
               key={link.name}
               href={link.href}
               className="block px-3 py-3 text-base font-medium text-secondary-800 hover:text-primary-600 hover:bg-secondary-50 rounded-md border-b border-secondary-100 last:border-0"
-              onClick={() => setIsOpen(false)}
+              onClick={(e) => {
+                setIsOpen(false);
+                if (link.onClick) link.onClick();
+              }}
             >
               {link.name}
             </a>

@@ -6,6 +6,8 @@ export interface Project {
   category: string;
   image: string;
   description: string;
+  fullDescription?: string;
+  gallery?: string[];
 }
 
 export interface Service {

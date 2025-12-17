@@ -3,7 +3,11 @@ import { PROJECTS } from '../constants';
 import { Project } from '../types';
 import { Plus } from 'lucide-react';
 
-const Portfolio: React.FC = () => {
+interface PortfolioProps {
+  onProjectClick: (project: Project) => void;
+}
+
+const Portfolio: React.FC<PortfolioProps> = ({ onProjectClick }) => {
   const [activeCategory, setActiveCategory] = useState<string>('הכל');
 
   // Extract unique categories
@@ -44,7 +48,11 @@ const Portfolio: React.FC = () => {
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProjects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+            <ProjectCard 
+              key={project.id} 
+              project={project} 
+              onClick={() => onProjectClick(project)} 
+            />
           ))}
         </div>
       </div>
@@ -54,11 +62,15 @@ const Portfolio: React.FC = () => {
 
 interface ProjectCardProps {
   project: Project;
+  onClick: () => void;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
   return (
-    <div className="group relative overflow-hidden rounded-xl bg-secondary-900 shadow-lg cursor-pointer h-72 lg:h-80">
+    <div 
+      onClick={onClick}
+      className="group relative overflow-hidden rounded-xl bg-secondary-900 shadow-lg cursor-pointer h-72 lg:h-80"
+    >
       <img
         src={project.image}
         alt={project.title}
@@ -79,7 +91,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         </p>
         <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200">
            <span className="inline-flex items-center text-white text-sm font-medium group-hover:text-primary-400">
-             לפרטים נוספים <Plus className="mr-1" size={16} />
+             לפרטים נוספים וגלריה <Plus className="mr-1" size={16} />
            </span>
         </div>
       </div>
